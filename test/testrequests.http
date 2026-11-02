@@ -1,0 +1,20 @@
+### get cats
+
+GET http://127.0.0.1:3000/api/v1/cats
+
+### get cat by id
+
+GET http://127.0.0.1:3000/api/v1/cats/1
+
+### post new cat
+
+POST http://127.0.0.1:3000/api/v1/cats
+Content-Type: application/json
+{
+    "cat_id": 444,
+    "name": "Tikru",
+    "birthdate": '20220909',
+    "weight": 13,
+    "owner": "Nalle Puh",
+    "image": "https://placecats.com/300/200"
+}
