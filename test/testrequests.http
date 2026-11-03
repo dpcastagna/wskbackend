@@ -33,8 +33,6 @@ Content-Type: application/json
 ### delete cat by id
 DELETE {{apiUrl}}/cats/3
 
-@apiUrl = http://127.0.0.1:3000/api/v1
-
 ### post new cat from a form
 POST http://127.0.0.1:3000/api/v1/cats HTTP/1.1
 Content-Type: multipart/form-data; boundary=MyBoundary
