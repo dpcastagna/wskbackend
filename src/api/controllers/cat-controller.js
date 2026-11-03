@@ -7,6 +7,7 @@ import {
 } from '../models/cat-model.js';
 
 const getCats = (req, res) => {
+  console.log('Ollaan getCatsissä');
   res.json(listAllCats());
 };
 
