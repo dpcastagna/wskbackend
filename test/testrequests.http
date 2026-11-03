@@ -1,20 +1,69 @@
-### get cats
+@apiUrl = http://127.0.0.1:3000/api/v1
 
-GET http://127.0.0.1:3000/api/v1/cats
+### get cats
+GET {{apiUrl}}/cats
 
 ### get cat by id
+GET {{apiUrl}}/cats/1
 
-GET http://127.0.0.1:3000/api/v1/cats/1
+### get cat by id (FAIL: not found)
+GET {{apiUrl}}/cats/98
 
 ### post new cat
-
-POST http://127.0.0.1:3000/api/v1/cats
+POST {{apiUrl}}/cats
 Content-Type: application/json
+
 {
-    "cat_id": 444,
     "name": "Tikru",
-    "birthdate": '20220909',
+    "birthdate": "2022-09-09",
     "weight": 13,
     "owner": "Nalle Puh",
     "image": "https://placecats.com/300/200"
 }
+
+### edit existing cat
+PUT {{apiUrl}}/cats/3
+Content-Type: application/json
+
+{
+    "weight": 6,
+    "owner": "Uusi omistaja"
+}
+
+### delete cat by id
+DELETE {{apiUrl}}/cats/3
+
+@apiUrl = http://127.0.0.1:3000/api/v1
+
+### get users
+GET {{apiUrl}}/users
+
+### get user by id
+GET {{apiUrl}}/users/3
+
+### get user by id (FAIL: not found)
+GET {{apiUrl}}/users/98
+
+### post new user
+POST {{apiUrl}}/users
+Content-Type: application/json
+
+{
+    "name": "Mervi Meikalainen",
+    "username": "mervimei",
+    "email": "mervi@metropolia.fi",
+    "role": "user",
+    "password": "mervword"
+}
+
+### edit existing user
+PUT {{apiUrl}}/users/3
+Content-Type: application/json
+
+{
+    "password": "admiword",
+    "role": "admin"
+}
+
+### delete user by id
+DELETE {{apiUrl}}/users/36
