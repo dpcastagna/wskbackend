@@ -35,6 +35,7 @@ const findCatById = (id) => {
 
 const addCat = (cat) => {
   const {name, weight, owner, image, birthdate} = cat;
+  console.log(cat.image);
   const newId = cats[0].cat_id + 1;
   cats.unshift({
     cat_id: newId,
