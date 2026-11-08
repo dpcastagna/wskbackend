@@ -4,7 +4,7 @@
 GET {{apiUrl}}/cats
 
 ### get cat by id
-GET {{apiUrl}}/cats/1
+GET {{apiUrl}}/cats/41
 
 ### get cat by id (FAIL: not found)
 GET {{apiUrl}}/cats/98
@@ -15,32 +15,32 @@ Content-Type: application/json
 
 {
     "name": "Tikru",
-    "birthdate": "2022-09-09",
     "weight": 13,
-    "owner": "Nalle Puh",
-    "image": "https://placecats.com/300/200"
+    "owner": 45,
+    "filename": "https://placecats.com/300/200",
+    "birthdate": "2022-09-09"
 }
 
 ### edit existing cat
-PUT {{apiUrl}}/cats/3
+PUT {{apiUrl}}/cats/47
 Content-Type: application/json
 
 {
-    "weight": 6,
-    "owner": "Uusi omistaja"
+    "weight": 9,
+    "owner": 40
 }
 
 ### delete cat by id
-DELETE {{apiUrl}}/cats/3
+DELETE {{apiUrl}}/cats/46
 
 ### post new cat from a form
 POST http://127.0.0.1:3000/api/v1/cats HTTP/1.1
 Content-Type: multipart/form-data; boundary=MyBoundary
 
 --MyBoundary
-Content-Disposition: form-data; name="name"
+Content-Disposition: form-data; name="cat_name"
 
-Misu
+Mesa
 --MyBoundary
 Content-Disposition: form-data; name="weight"
 
@@ -48,23 +48,24 @@ Content-Disposition: form-data; name="weight"
 --MyBoundary
 Content-Disposition: form-data; name="owner"
 
-DC
---MyBoundary
-Content-Disposition: form-data; name="birthdate"
-
-2023-10-08
+43
 --MyBoundary
 Content-Disposition: form-data; name="image"; filename="dog.jpg"
 Content-Type: image/jpeg
 
 < ./dog.jpg
+--MyBoundary
+Content-Disposition: form-data; name="birthdate"
+
+2023-10-08
 --MyBoundary--
+
 
 ### get users
 GET {{apiUrl}}/users
 
 ### get user by id
-GET {{apiUrl}}/users/3
+GET {{apiUrl}}/users/1
 
 ### get user by id (FAIL: not found)
 GET {{apiUrl}}/users/98
@@ -75,14 +76,14 @@ Content-Type: application/json
 
 {
     "name": "Mervi Meikalainen",
-    "username": "mervimei",
+    "username": "mervimei4",
     "email": "mervi@metropolia.fi",
     "role": "user",
     "password": "mervword"
 }
 
 ### edit existing user
-PUT {{apiUrl}}/users/3
+PUT {{apiUrl}}/users/40
 Content-Type: application/json
 
 {
@@ -91,4 +92,7 @@ Content-Type: application/json
 }
 
 ### delete user by id
-DELETE {{apiUrl}}/users/36
+DELETE {{apiUrl}}/users/46
+
+### get cats by userid
+GET {{apiUrl}}/users/catsownedbyuser/37
