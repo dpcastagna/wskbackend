@@ -5,27 +5,38 @@ import {
   modifyCat,
   removeCat,
 } from '../models/cat-model.js';
+import {findUserById} from '../models/user-model.js';
 
-const getCats = (req, res) => {
-  console.log('Ollaan getCatsissä');
-  res.json(listAllCats());
+const getCats = async (req, res) => {
+  const cats = await listAllCats();
+  if (cats.length > 0) {
+    for (const cat of cats) {
+      const owner = await findUserById(cat.owner);
+      cat.ownername = owner.name;
+    }
+  }
+  res.json(cats);
 };
 
-const getCatById = (req, res) => {
-  const cat = findCatById(req.params.id);
+const getCatById = async (req, res) => {
+  const cat = await findCatById(req.params.id);
+
   if (cat) {
+    const owner = await findUserById(cat.owner);
+    cat.ownername = owner.name;
     res.json(cat);
   } else {
     res.sendStatus(404);
   }
 };
 
-const postCat = (req, res) => {
-  console.log(req.body);
+const postCat = async (req, res) => {
   console.log(req.file);
-  req.body.image = req.file.filename;
+  req.body.filename = req.file.filename;
+  console.log(req.body.birthdate);
 
-  const result = addCat(req.body);
+  const result = await addCat(req.body);
+  console.log(result);
   if (result.cat_id) {
     res.status(201);
     res.json({message: 'Cat item added.', result});
@@ -34,17 +45,17 @@ const postCat = (req, res) => {
   }
 };
 
-const putCat = (req, res) => {
-  const result = modifyCat(Number(req.params.id), req.body);
+const putCat = async (req, res) => {
+  const result = await modifyCat(Number(req.params.id), req.body);
   if (result) {
     res.json({message: 'Cat item updated!'});
   } else {
-    res.status(404).json({error: 404, message: 'Not found.'});
+    res.status(404).json({error: 404, message: 'Cat not found.'});
   }
 };
 
-const deleteCat = (req, res) => {
-  const result = removeCat(Number(req.params.id));
+const deleteCat = async (req, res) => {
+  const result = await removeCat(Number(req.params.id));
   if (result) {
     res.json({message: 'Cat item deleted.'});
   } else {

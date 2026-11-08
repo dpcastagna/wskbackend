@@ -1,17 +1,18 @@
 import {
   addUser,
+  findCatsByUserId,
   findUserById,
   listAllUsers,
   modifyUser,
   removeUser,
 } from '../models/user-model.js';
 
-const getUsers = (req, res) => {
-  res.json(listAllUsers());
+const getUsers = async (req, res) => {
+  res.json(await listAllUsers());
 };
 
-const getUserById = (req, res) => {
-  const user = findUserById(req.params.id);
+const getUserById = async (req, res) => {
+  const user = await findUserById(req.params.id);
   if (user) {
     res.json(user);
   } else {
@@ -19,8 +20,21 @@ const getUserById = (req, res) => {
   }
 };
 
-const postUser = (req, res) => {
-  const result = addUser(req.body);
+const getCatsByUserId = async (req, res) => {
+  const cats = await findCatsByUserId(req.params.id);
+  if (cats) {
+    for (const cat of cats) {
+      const owner = await findUserById(cat.owner);
+      cat.ownername = owner.name;
+    }
+    res.json(cats);
+  } else {
+    res.sendStatus(404);
+  }
+};
+
+const postUser = async (req, res) => {
+  const result = await addUser(req.body);
   if (result.user_id) {
     res.status(201);
     res.json({message: 'User item added.', result});
@@ -29,17 +43,17 @@ const postUser = (req, res) => {
   }
 };
 
-const putUser = (req, res) => {
-  const result = modifyUser(Number(req.params.id), req.body);
+const putUser = async (req, res) => {
+  const result = await modifyUser(Number(req.params.id), req.body);
   if (result) {
     res.json({message: 'User item updated!'});
   } else {
-    res.status(404).json({error: 404, message: 'Not found.'});
+    res.status(404).json({error: 404, message: 'User not found.'});
   }
 };
 
-const deleteUser = (req, res) => {
-  const result = removeUser(Number(req.params.id));
+const deleteUser = async (req, res) => {
+  const result = await removeUser(Number(req.params.id));
   if (result) {
     res.json({message: 'User item deleted.'});
   } else {
@@ -47,4 +61,4 @@ const deleteUser = (req, res) => {
   }
 };
 
-export {getUsers, getUserById, postUser, putUser, deleteUser};
+export {getUsers, getUserById, getCatsByUserId, postUser, putUser, deleteUser};
