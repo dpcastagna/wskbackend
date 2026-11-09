@@ -6,6 +6,14 @@ const listAllUsers = async () => {
   return rows;
 };
 
+const findUserByUsername = async (username) => {
+  const [rows] = await promisePool.execute(
+    'SELECT * FROM wsk_users WHERE username = ?',
+    [username]
+  );
+  return rows[0];
+};
+
 const findUserById = async (id) => {
   const [rows] = await promisePool.execute(
     'SELECT * FROM wsk_users WHERE user_id = ?',
@@ -49,6 +57,7 @@ const modifyUser = async (id, user) => {
     user,
     id,
   ]);
+  console.log(sql);
   const rows = await promisePool.execute(sql);
   console.log('rows', rows);
   if (rows[0].affectedRows === 0) {
@@ -75,6 +84,7 @@ const removeUser = async (id) => {
 
 export {
   listAllUsers,
+  findUserByUsername,
   findUserById,
   findCatsByUserId,
   addUser,
