@@ -30,7 +30,12 @@ const getCatById = async (req, res) => {
   }
 };
 
-const postCat = async (req, res) => {
+const postCat = async (req, res, next) => {
+  if (!req.file) {
+    const error = new Error('Invalid or missing file');
+    error.status = 400;
+    next(error);
+  }
   console.log(req.file);
   req.body.filename = req.file.filename;
 
@@ -40,12 +45,10 @@ const postCat = async (req, res) => {
 
   const result = await addCat(cat, user);
   console.log(result);
-  if (result.cat_id) {
-    res.status(201);
-    res.json({message: 'Cat item added.', result});
-  } else {
-    res.sendStatus(400);
+  if (result.error) {
+    return next(new Error(result.error));
   }
+  res.status(201).json({message: 'New media item added.', ...result});
 };
 
 const putCat = async (req, res) => {

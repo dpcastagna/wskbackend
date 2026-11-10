@@ -8,17 +8,22 @@ import {
 } from '../controllers/cat-controller.js';
 import logger from '../../middlewares/logger.js';
 
-import multer from 'multer';
 import {createThumbnail} from '../../middlewares/upload.js';
 import {authenticateToken} from '../../middlewares/authentication.js';
-const upload = multer({dest: 'uploads/'});
+import {upload} from '../../middlewares/upload.js';
+import {body} from 'express-validator';
+import {validationErrors} from '../../middlewares/error-handlers.js';
 
 const catRouter = express.Router();
 
-catRouter
-  .route('/')
-  .get(logger, getCats)
-  .post(authenticateToken, upload.single('image'), createThumbnail, postCat);
+catRouter.route('/').get(logger, getCats).post(
+  authenticateToken,
+  upload.single('image'),
+  // TODO: add validation and sanitization rules here
+  validationErrors,
+  createThumbnail,
+  postCat
+);
 
 catRouter
   .route('/:id')
