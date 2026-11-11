@@ -7,7 +7,12 @@ import {
 } from '../models/cat-model.js';
 import {findUserById} from '../models/user-model.js';
 
-const getCats = async (req, res) => {
+const getCats = async (req, res, next) => {
+  if (!res) {
+    const error = new Error('Connection error');
+    error.status = 400;
+    next(error);
+  }
   const cats = await listAllCats();
   if (cats.length > 0) {
     for (const cat of cats) {
@@ -18,19 +23,23 @@ const getCats = async (req, res) => {
   res.json(cats);
 };
 
-const getCatById = async (req, res) => {
-  const cat = await findCatById(req.params.id);
+const getCatById = async (req, res, next) => {
+  const result = await findCatById(req.params.id);
 
-  if (cat) {
-    const owner = await findUserById(cat.owner);
-    cat.ownername = owner.name;
-    res.json(cat);
-  } else {
-    res.sendStatus(404);
+  if (result.error) {
+    return next(new Error(result.error));
   }
+  const owner = await findUserById(result.owner);
+  result.ownername = owner.name;
+  res.json(result);
 };
 
-const postCat = async (req, res) => {
+const postCat = async (req, res, next) => {
+  if (!req.file) {
+    const error = new Error('Invalid or missing file');
+    error.status = 400;
+    next(error);
+  }
   console.log(req.file);
   req.body.filename = req.file.filename;
 
@@ -40,37 +49,34 @@ const postCat = async (req, res) => {
 
   const result = await addCat(cat, user);
   console.log(result);
-  if (result.cat_id) {
-    res.status(201);
-    res.json({message: 'Cat item added.', result});
-  } else {
-    res.sendStatus(400);
+  if (result.error) {
+    return next(new Error(result.error));
   }
+  res.status(201).json({message: 'New cat item added.', ...result});
 };
 
-const putCat = async (req, res) => {
+const putCat = async (req, res, next) => {
   const id = Number(req.params.id);
   const cat = req.body;
   const user = res.locals.user;
   const result = await modifyCat(id, cat, user);
-  if (result) {
-    res.json({message: 'Cat item updated!'});
-  } else {
-    res.status(404).json({error: 404, message: 'Cat not found.'});
+  if (result.error) {
+    return next(new Error(result.error));
   }
+  res.json({message: 'Cat item updated!'});
 };
 
-const deleteCat = async (req, res) => {
+const deleteCat = async (req, res, next) => {
   const id = Number(req.params.id);
   const user = res.locals.user;
   console.log('user', user);
 
   const result = await removeCat(id, user);
-  if (result) {
-    res.json({message: 'Cat item deleted.'});
-  } else {
-    res.status(404).json({error: 404, message: 'Cat not found.'});
+  if (result.error) {
+    return next(new Error(result.error));
   }
+
+  res.json({message: 'Cat item deleted.'});
 };
 
 export {getCats, getCatById, postCat, putCat, deleteCat};

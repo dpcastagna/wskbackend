@@ -27,8 +27,8 @@ Content-Type: application/json
 Authorization: Bearer {{login.response.body.token}}
 
 {
-    "cat_name": "Mosse",
-    "weight": 15,
+    "cat_name": "Misse",
+    "weight": 23,
     "owner": 49
 }
 
@@ -67,6 +67,39 @@ Content-Disposition: form-data; name="birthdate"
 2023-10-08
 --MyBoundary--
 
+### post new cat with no body FAIL
+POST http://127.0.0.1:3000/api/v1/cats HTTP/1.1
+Content-Type: multipart/form-data; boundary=MyBoundary
+Authorization: Bearer {{login.response.body.token}}
+
+
+### post new cat from a form FAIL
+POST http://127.0.0.1:3000/api/v1/cats HTTP/1.1
+Content-Type: multipart/form-data; boundary=MyBoundary
+Authorization: Bearer {{login.response.body.token}}
+
+--MyBoundary
+Content-Disposition: form-data; name="cat_name"
+
+Mosa
+--MyBoundary
+Content-Disposition: form-data; name="weight"
+
+6
+--MyBoundary
+Content-Disposition: form-data; name="owner"
+
+49
+--MyBoundary
+Content-Disposition: form-data; name="image"; filename="dog.jpg"
+Content-Type: application/pdf
+
+< ./dog.jpg
+--MyBoundary
+Content-Disposition: form-data; name="birthdate"
+
+2023-10-08
+--MyBoundary--
 
 ### get users
 GET {{apiUrl}}/users
@@ -107,7 +140,17 @@ Content-Type: application/json
 Authorization: Bearer {{login.response.body.token}}
 
 {
-    "name": "Mervi Muukalainen",
+    "name": "Mervi Muukala",
+    "email": "mermui2@suomi.fi"
+}
+
+### edit existing user FAIL
+PUT {{apiUrl}}/users/5333
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+    "name": "Mervi Muukala",
     "email": "mermui2@suomi.fi"
 }
 
@@ -125,8 +168,15 @@ Authorization: Bearer {{login.response.body.token}}
 DELETE {{apiUrl}}/users/58
 Authorization: Bearer {{login.response.body.token}}
 
+### delete user by id FAIL
+DELETE {{apiUrl}}/users/5844
+Authorization: Bearer {{login.response.body.token}}
+
 ### get cats by userid
-GET {{apiUrl}}/users/catsownedbyuser/50
+GET {{apiUrl}}/users/catsownedbyuser/49
+
+### get cats by userid FAIL
+GET {{apiUrl}}/users/catsownedbyuser/49555
 
 ### Post user login
 # @name login
