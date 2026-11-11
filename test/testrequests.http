@@ -27,8 +27,8 @@ Content-Type: application/json
 Authorization: Bearer {{login.response.body.token}}
 
 {
-    "cat_name": "Mosse",
-    "weight": 15,
+    "cat_name": "Misse",
+    "weight": 23,
     "owner": 49
 }
 
@@ -140,7 +140,17 @@ Content-Type: application/json
 Authorization: Bearer {{login.response.body.token}}
 
 {
-    "name": "Mervi Muukalainen",
+    "name": "Mervi Muukala",
+    "email": "mermui2@suomi.fi"
+}
+
+### edit existing user FAIL
+PUT {{apiUrl}}/users/5333
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+    "name": "Mervi Muukala",
     "email": "mermui2@suomi.fi"
 }
 
@@ -158,8 +168,15 @@ Authorization: Bearer {{login.response.body.token}}
 DELETE {{apiUrl}}/users/58
 Authorization: Bearer {{login.response.body.token}}
 
+### delete user by id FAIL
+DELETE {{apiUrl}}/users/5844
+Authorization: Bearer {{login.response.body.token}}
+
 ### get cats by userid
-GET {{apiUrl}}/users/catsownedbyuser/50
+GET {{apiUrl}}/users/catsownedbyuser/49
+
+### get cats by userid FAIL
+GET {{apiUrl}}/users/catsownedbyuser/49555
 
 ### Post user login
 # @name login

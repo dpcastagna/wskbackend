@@ -12,40 +12,38 @@ const getUsers = async (req, res) => {
   res.json(await listAllUsers());
 };
 
-const getUserById = async (req, res) => {
-  const user = await findUserById(req.params.id);
-  if (user) {
-    res.json(user);
-  } else {
-    res.sendStatus(404);
+const getUserById = async (req, res, next) => {
+  const result = await findUserById(req.params.id);
+  if (!result) {
+    return next(new Error('User not found.'));
   }
+  res.json(result);
 };
 
-const getCatsByUserId = async (req, res) => {
-  const cats = await findCatsByUserId(req.params.id);
-  if (cats) {
-    for (const cat of cats) {
-      const owner = await findUserById(cat.owner);
-      cat.ownername = owner.name;
-    }
-    res.json(cats);
-  } else {
-    res.sendStatus(404);
+const getCatsByUserId = async (req, res, next) => {
+  const result = await findCatsByUserId(req.params.id);
+  // console.log(result);
+  if (!result) {
+    return next(new Error('User not found, so no cats were found also.'));
   }
+  for (const cat of result) {
+    const owner = await findUserById(cat.owner);
+    cat.ownername = owner.name;
+  }
+  res.json(result);
 };
 
-const postUser = async (req, res) => {
+const postUser = async (req, res, next) => {
   req.body.password = bcrypt.hashSync(req.body.password, 10);
   const result = await addUser(req.body);
-  if (result.user_id) {
-    res.status(201);
-    res.json({message: 'User item added.', result});
-  } else {
-    res.sendStatus(400);
+  if (result.error) {
+    return next(new Error(result.error));
   }
+  res.status(201);
+  res.json({message: 'User added.', result});
 };
 
-const putUser = async (req, res) => {
+const putUser = async (req, res, next) => {
   if (req.body.password) {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
   }
@@ -55,23 +53,22 @@ const putUser = async (req, res) => {
   const user = res.locals.user;
   const modifiedUser = req.body;
   const result = await modifyUser(id, user, modifiedUser);
-  if (result) {
-    res.json({message: 'User item updated!'});
-  } else {
-    res.status(404).json({error: 404, message: 'User not found.'});
+  console.log(result);
+  if (!result) {
+    return next(new Error('User not found, so no user was updated.'));
   }
+  res.json({message: 'User updated!'});
 };
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, res, next) => {
   const id = Number(req.params.id);
   const user = res.locals.user;
   const result = await removeUser(id, user);
   console.log('deleteUser', result);
-  if (result) {
-    res.json({message: 'User item deleted.'});
-  } else {
-    res.status(404).json({error: 404, message: 'User not found.'});
+  if (!result) {
+    return next(new Error('User not found, so no user was deleted.'));
   }
+  res.json({message: 'User deleted.'});
 };
 
 export {getUsers, getUserById, getCatsByUserId, postUser, putUser, deleteUser};

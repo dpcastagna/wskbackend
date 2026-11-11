@@ -31,7 +31,7 @@ const findCatsByUserId = async (id) => {
     'SELECT * FROM wsk_cats WHERE owner = ?',
     [id]
   );
-  console.log('rows', rows);
+  // console.log('rows', rows);
   if (rows.length === 0) {
     return false;
   }
@@ -85,20 +85,6 @@ const removeUser = async (id, user) => {
       [id]
     );
   }
-  // else if (id === user.user_id) {
-  //   [catRows] = await promisePool.execute(
-  //     'DELETE FROM wsk_cats WHERE owner = ?',
-  //     [id]
-  //   );
-  //   [userRows] = await promisePool.execute(
-  //     'DELETE FROM wsk_users WHERE user_id = ?',
-  //     [id]
-  //   );
-  // }
-
-  // const [result] = await promisePool.execute(sql, params);
-
-  // return result.affectedRows > 0;
 
   console.log('userrows', userRows, ' catrows', catRows);
 

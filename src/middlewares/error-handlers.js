@@ -5,6 +5,7 @@ const notFoundHandler = (req, res, next) => {
   error.status = 404;
   next(error); // forward error to error handler
 };
+
 /**
  * Custom default middleware for handling errors
  */
