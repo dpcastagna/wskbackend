@@ -13,7 +13,7 @@ const findCatById = async (id) => {
     'SELECT * FROM wsk_cats WHERE cat_id = ?',
     [id]
   );
-  console.log('rows', rows);
+  // console.log('rows', rows);
   if (rows.length === 0) {
     return false;
   }
@@ -24,7 +24,7 @@ const addCat = async (cat, user) => {
   let sql;
   let params;
 
-  console.log(cat, user);
+  console.log('addCat', cat, user);
   const {cat_name, weight, owner, filename, birthdate} = cat;
 
   if (user.role === 'admin' || user.role === 'user') {

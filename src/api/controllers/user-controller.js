@@ -50,7 +50,11 @@ const putUser = async (req, res) => {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
   }
   console.log('putUser', req.body);
-  const result = await modifyUser(Number(req.params.id), req.body);
+
+  const id = Number(req.params.id);
+  const user = res.locals.user;
+  const modifiedUser = req.body;
+  const result = await modifyUser(id, user, modifiedUser);
   if (result) {
     res.json({message: 'User item updated!'});
   } else {
@@ -59,7 +63,10 @@ const putUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const result = await removeUser(Number(req.params.id));
+  const id = Number(req.params.id);
+  const user = res.locals.user;
+  const result = await removeUser(id, user);
+  console.log('deleteUser', result);
   if (result) {
     res.json({message: 'User item deleted.'});
   } else {
