@@ -33,9 +33,12 @@ const getCatById = async (req, res) => {
 const postCat = async (req, res) => {
   console.log(req.file);
   req.body.filename = req.file.filename;
-  console.log(req.body.birthdate);
 
-  const result = await addCat(req.body);
+  const cat = req.body;
+  const user = res.locals.user;
+  console.log(req.body, user);
+
+  const result = await addCat(cat, user);
   console.log(result);
   if (result.cat_id) {
     res.status(201);
@@ -46,7 +49,10 @@ const postCat = async (req, res) => {
 };
 
 const putCat = async (req, res) => {
-  const result = await modifyCat(Number(req.params.id), req.body);
+  const id = Number(req.params.id);
+  const cat = req.body;
+  const user = res.locals.user;
+  const result = await modifyCat(id, cat, user);
   if (result) {
     res.json({message: 'Cat item updated!'});
   } else {
@@ -55,7 +61,11 @@ const putCat = async (req, res) => {
 };
 
 const deleteCat = async (req, res) => {
-  const result = await removeCat(Number(req.params.id));
+  const id = Number(req.params.id);
+  const user = res.locals.user;
+  console.log('user', user);
+
+  const result = await removeCat(id, user);
   if (result) {
     res.json({message: 'Cat item deleted.'});
   } else {

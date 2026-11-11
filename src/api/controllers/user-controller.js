@@ -6,6 +6,7 @@ import {
   modifyUser,
   removeUser,
 } from '../models/user-model.js';
+import bcrypt from 'bcrypt';
 
 const getUsers = async (req, res) => {
   res.json(await listAllUsers());
@@ -34,6 +35,7 @@ const getCatsByUserId = async (req, res) => {
 };
 
 const postUser = async (req, res) => {
+  req.body.password = bcrypt.hashSync(req.body.password, 10);
   const result = await addUser(req.body);
   if (result.user_id) {
     res.status(201);
@@ -44,7 +46,15 @@ const postUser = async (req, res) => {
 };
 
 const putUser = async (req, res) => {
-  const result = await modifyUser(Number(req.params.id), req.body);
+  if (req.body.password) {
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
+  }
+  console.log('putUser', req.body);
+
+  const id = Number(req.params.id);
+  const user = res.locals.user;
+  const modifiedUser = req.body;
+  const result = await modifyUser(id, user, modifiedUser);
   if (result) {
     res.json({message: 'User item updated!'});
   } else {
@@ -53,7 +63,10 @@ const putUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-  const result = await removeUser(Number(req.params.id));
+  const id = Number(req.params.id);
+  const user = res.locals.user;
+  const result = await removeUser(id, user);
+  console.log('deleteUser', result);
   if (result) {
     res.json({message: 'User item deleted.'});
   } else {

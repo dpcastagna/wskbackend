@@ -1,9 +1,13 @@
 import express from 'express';
 import router from './api/index.js';
 import requestTime from './middlewares/request-time.js';
+import cors from 'cors';
+
 const hostname = '127.0.0.1';
 const port = 3000;
 const app = express();
+
+app.use(cors());
 
 app.use(express.static('public'));
 
