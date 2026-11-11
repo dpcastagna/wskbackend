@@ -19,7 +19,7 @@ const findUserById = async (id) => {
     'SELECT * FROM wsk_users WHERE user_id = ?',
     [id]
   );
-  console.log('rows', rows);
+  // console.log('user', rows);
   if (rows.length === 0) {
     return false;
   }
@@ -52,34 +52,57 @@ const addUser = async (user) => {
   return {user_id: rows[0].insertId};
 };
 
-const modifyUser = async (id, user) => {
-  const sql = promisePool.format(`UPDATE wsk_users SET ? WHERE user_id = ?`, [
-    user,
-    id,
-  ]);
-  console.log(sql);
-  const rows = await promisePool.execute(sql);
-  console.log('rows', rows);
-  if (rows[0].affectedRows === 0) {
-    return false;
+const modifyUser = async (id, user, modifiedUser) => {
+  let sql;
+
+  if (user.role === 'admin' || id === user.user_id) {
+    sql = promisePool.format(`UPDATE wsk_users SET ? WHERE user_id = ?`, [
+      modifiedUser,
+      id,
+    ]);
   }
-  return true;
+
+  if (sql) {
+    const [result] = await promisePool.execute(sql);
+
+    return result.affectedRows > 0;
+  }
+
+  return false;
 };
 
-const removeUser = async (id) => {
-  const [catRows] = await promisePool.execute(
-    'DELETE FROM wsk_cats WHERE owner = ?',
-    [id]
-  );
-  const [rows] = await promisePool.execute(
-    'DELETE FROM wsk_users WHERE user_id = ?',
-    [id]
-  );
-  console.log('rows', rows, ' catrow', catRows);
-  if (rows.affectedRows === 0) {
-    return false;
+const removeUser = async (id, user) => {
+  let catRows;
+  let userRows;
+
+  if (user.role === 'admin' || id === user.user_id) {
+    [catRows] = await promisePool.execute(
+      'DELETE FROM wsk_cats WHERE owner = ?',
+      [id]
+    );
+    [userRows] = await promisePool.execute(
+      'DELETE FROM wsk_users WHERE user_id = ?',
+      [id]
+    );
   }
-  return true;
+  // else if (id === user.user_id) {
+  //   [catRows] = await promisePool.execute(
+  //     'DELETE FROM wsk_cats WHERE owner = ?',
+  //     [id]
+  //   );
+  //   [userRows] = await promisePool.execute(
+  //     'DELETE FROM wsk_users WHERE user_id = ?',
+  //     [id]
+  //   );
+  // }
+
+  // const [result] = await promisePool.execute(sql, params);
+
+  // return result.affectedRows > 0;
+
+  console.log('userrows', userRows, ' catrows', catRows);
+
+  return userRows.affectedRows > 0;
 };
 
 export {

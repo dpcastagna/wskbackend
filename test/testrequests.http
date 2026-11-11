@@ -7,7 +7,7 @@ GET {{apiUrl}}/cats
 GET {{apiUrl}}/cats/41
 
 ### get cat by id (FAIL: not found)
-GET {{apiUrl}}/cats/98
+GET {{apiUrl}}/cats/987
 
 ### post new cat
 POST {{apiUrl}}/cats
@@ -16,24 +16,28 @@ Content-Type: application/json
 {
     "name": "Tikru",
     "weight": 13,
-    "owner": 45,
+    "owner": 37,
     "filename": "https://placecats.com/300/200",
     "birthdate": "2022-09-09"
 }
 
 ### edit existing cat
-PUT {{apiUrl}}/cats/56
+PUT {{apiUrl}}/cats/60
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.token}}
 
 {
-    "weight": 9,
+    "cat_name": "Mosse",
+    "weight": 15,
     "owner": 49
 }
 
 ### delete cat by id
-DELETE {{apiUrl}}/cats/47
+DELETE {{apiUrl}}/cats/64
 Authorization: Bearer {{login.response.body.token}}
+
+### delete cat by id FAIL
+DELETE {{apiUrl}}/cats/60
 
 ### post new cat from a form
 POST http://127.0.0.1:3000/api/v1/cats HTTP/1.1
@@ -43,7 +47,7 @@ Authorization: Bearer {{login.response.body.token}}
 --MyBoundary
 Content-Disposition: form-data; name="cat_name"
 
-Mosa
+Maijan kissa
 --MyBoundary
 Content-Disposition: form-data; name="weight"
 
@@ -51,7 +55,7 @@ Content-Disposition: form-data; name="weight"
 --MyBoundary
 Content-Disposition: form-data; name="owner"
 
-49
+37
 --MyBoundary
 Content-Disposition: form-data; name="image"; filename="dog.jpg"
 Content-Type: image/jpeg
@@ -124,36 +128,57 @@ Content-Type: application/json
 
 {
     "name": "Maija Meikalainen",
-    "username": "maijamei",
-    "email": "maijam@metropolia.fi",
+    "username": "maijamei234",
+    "email": "maijam2@metropolia.fi",
     "role": "user",
-    "password": "maijamei"
+    "password": "maijamei2"
 }
 
 ### edit existing user
-PUT {{apiUrl}}/users/49
+PUT {{apiUrl}}/users/53
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.token}}
 
 {
-    "name": "admin2",
-    "email": "admin2@suomi.fi"
+    "name": "Mervi Muukalainen",
+    "email": "mermui2@suomi.fi"
+}
+
+### edit existing admin
+PUT {{apiUrl}}/users/40
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+    "name": "Maija Mehiläinen",
+    "email": "mermui2@suomi.fi"
 }
 
 ### delete user by id
-DELETE {{apiUrl}}/users/46
+DELETE {{apiUrl}}/users/58
+Authorization: Bearer {{login.response.body.token}}
 
 ### get cats by userid
-GET {{apiUrl}}/users/catsownedbyuser/49
+GET {{apiUrl}}/users/catsownedbyuser/50
 
-### Post login
+### Post user login
 # @name login
 POST http://localhost:3000/api/v1/auth/login
 content-type: application/json
 
 {
-  "username": "maijamei",
-  "password": "maijamei"
+  "username": "maijamei2",
+  "password": "maijamei2"
+}
+
+### Post admin login
+# @name login
+POST http://localhost:3000/api/v1/auth/login
+content-type: application/json
+
+{
+  "username": "admin2",
+  "password": "admin2"
 }
 
 ### Get my user info
